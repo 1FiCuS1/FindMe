@@ -2,10 +2,15 @@ import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
 from vk_api import VkUpload
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 def write_msg(sender, message):
     authorize.method('messages.send', {'user_id': sender, 'message': message, 'random_id': get_random_id()})
 # image = open('image.png', 'rb') # будем брать топ фото из png файла для анкеты человека
-token = "vk1.a.BIz9EanDLhQLtuSTT5mVGSTvU7mIycKbGSzDDIVisPwVFO7VwFuglk4c8Z87XC1M0dS_fkkVsCll42WTCH5toPeEabcYTxCz6C7gqoLgTEKd6DrSD9uU0tofY8S3AhXZp_1Ln18-CKTWtrRn81IG18MBY2KAMrAIE3L_DuKKkNiW3sKzPQkdScH722rzshSP5asvFd_daoETjY_-2CzvSg"
+token = os.getenv(key='ACCESS_TOKEN')
 authorize = vk_api.VkApi(token=token)
 longpoll = VkLongPoll(authorize)
 upload = VkUpload(authorize)
