@@ -5,7 +5,12 @@ from vk_api import VkUpload
 import os
 from dotenv import load_dotenv
 
+from CheckBD.ABCCheckDb import ABCCheckDb
+from CheckBD.CheckDBSQL import CheckDBSQL
+from SQLRepository import SQLRepository
+
 load_dotenv()
+check_db:ABCCheckDb
 
 def write_msg(sender, message):
     authorize.method('messages.send', {'user_id': sender, 'message': message, 'random_id': get_random_id()})
@@ -89,11 +94,24 @@ def create_user_profile(user_id, vk_session):
     print(f'Анкета пользователя {user_id}: {user_info}')
     for key, value in user_info.items():
         print(f'{key}: {value}')
-for event in longpoll.listen():
-    if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-        reseived_message = event.text
-        if reseived_message == 'привет':
-            create_user_profile(user_id=event.user_id, vk_session=authorize)
 
 
+def start_chat_bot():
+    for event in longpoll.listen():
+        if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+            reseived_message = event.text
+            if reseived_message == 'привет':
+                create_user_profile(user_id=event.user_id, vk_session=authorize)
+
+
+if __name__ == '__main__':
+    if os.getenv(key='REALIZATION') == 'SQL':
+        check_db = CheckDBSQL()
+    else:
+        check_db = CheckDBSQL()
+
+    if check_db.check_db():
+        sql_repository = SQLRepository()
+        #sql_repository.create_db()
+        #start_chat_bot()
 
